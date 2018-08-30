@@ -4,9 +4,10 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.abhi.edu.dynamoDB.util.JacksonConverter;
 import com.amazonaws.AmazonServiceException;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
+import com.amazonaws.services.dynamodbv2.document.Item;
+import com.amazonaws.services.dynamodbv2.document.ItemUtils;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import com.amazonaws.services.dynamodbv2.model.PutItemResult;
 import com.amazonaws.services.dynamodbv2.model.ResourceNotFoundException;
@@ -19,17 +20,16 @@ import com.amazonaws.services.dynamodbv2.model.ResourceNotFoundException;
 public class PutItem {
 	public static void main(String[] args) {
 		put();
-		
 		putJSON("{\"Artist\": \"Anuradha Paudwal\",\"SongTitle\": \"Tere Naam Liya\",\"AlbumTitle\": \"Ram Lakhan\",\"DateTime\": \""+new Date().toString()+"\"}");
 	}
 
 	public static void putJSON(String json) {
 		final AmazonDynamoDB ddb = Connection.getConnection();
 		String table_name = Run.TABLE_NAME;
-		JacksonConverter converter = new JacksonConverter();
 		Map<String, AttributeValue> item_values;
 		try {
-			item_values = converter.stringToMap(json);
+			Item item = Item.fromJSON(json);
+			item_values = ItemUtils.toAttributeValues(item);
 			ddb.putItem(table_name, item_values);
 		} catch (Exception e) {
 			e.printStackTrace();

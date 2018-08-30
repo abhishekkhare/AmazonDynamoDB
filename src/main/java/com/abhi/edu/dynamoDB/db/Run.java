@@ -10,7 +10,7 @@ import java.util.Map;
  *
  */
 public class Run {
-	public static final String TABLE_NAME = "MusicCollection" + 9;
+	public static final String TABLE_NAME = "MusicCollection" + 11;
 
 	public static void main(String[] args) {
 		CreateTable.create();

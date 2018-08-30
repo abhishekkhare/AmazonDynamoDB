@@ -4,10 +4,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import com.abhi.edu.dynamoDB.util.JacksonConverter;
 import com.amazonaws.AmazonServiceException;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
+import com.amazonaws.services.dynamodbv2.document.Item;
+import com.amazonaws.services.dynamodbv2.document.ItemUtils;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import com.amazonaws.services.dynamodbv2.model.GetItemRequest;
 
@@ -40,8 +41,9 @@ public class GetItem {
 			} else {
 				System.out.format("No item found with the key %s!\n", key_to_get);
 			}
-			JacksonConverter converter = new JacksonConverter();
-			System.out.println("JSON RESPONSE: \n" +converter.mapToJsonObject(returned_item));
+			Item item = ItemUtils.toItem(returned_item);
+			
+			System.out.println("JSON RESPONSE: \n" +item.toJSON());
 		} catch (AmazonServiceException e) {
 			System.err.println(e.getErrorMessage());
 			System.exit(1);

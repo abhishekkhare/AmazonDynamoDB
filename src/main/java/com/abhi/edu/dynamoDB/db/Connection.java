@@ -13,6 +13,7 @@ import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
 
 public class Connection {
 	public static AmazonDynamoDB getConnection(String acessKey, String secretKey) {
+		//final AmazonDynamoDB ddb = AmazonDynamoDBClientBuilder.defaultClient();
 		BasicAWSCredentials awsCredentials = new BasicAWSCredentials(acessKey, secretKey);
 		final AmazonDynamoDB ddb = AmazonDynamoDBClientBuilder.standard()
 				.withCredentials(new AWSStaticCredentialsProvider(awsCredentials)).build();
@@ -20,8 +21,8 @@ public class Connection {
 	}
 
 	public static AmazonDynamoDB getConnection() {
-		BasicAWSCredentials awsCredentials = new BasicAWSCredentials("*****",
-				"****");
+		BasicAWSCredentials awsCredentials = new BasicAWSCredentials("****",
+				"***");
 		final AmazonDynamoDB ddb = AmazonDynamoDBClientBuilder.standard()
 				.withCredentials(new AWSStaticCredentialsProvider(awsCredentials)).build();
 		return ddb;

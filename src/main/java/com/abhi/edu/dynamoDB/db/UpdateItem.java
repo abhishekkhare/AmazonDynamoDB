@@ -6,8 +6,10 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import com.abhi.edu.dynamoDB.util.JacksonConverter;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
+import com.amazonaws.services.dynamodbv2.document.Item;
+import com.amazonaws.services.dynamodbv2.document.ItemUtils;
+import com.amazonaws.services.dynamodbv2.model.AttributeAction;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import com.amazonaws.services.dynamodbv2.model.AttributeValueUpdate;
 import com.amazonaws.services.dynamodbv2.model.UpdateItemRequest;
@@ -23,14 +25,14 @@ public class UpdateItem {
 		Map<String, Object> keyValueMap = new HashMap<String, Object>();
 		keyValueMap.put("Artist", "Kishore Kumar");
 		keyValueMap.put("SongTitle", "Neele Neele Ambar Par");
-		
+
 		Map<String, Object> updatedvalues = new HashMap<String, Object>();
 		updatedvalues.put("AlbumTitle", "Kalaakaar");
 		updatedvalues.put("DateTime", new Date().toString());
 		update(keyValueMap, updatedvalues);
 		GetItem.getItem();
 		Thread.sleep(3000);
-		updateWithJSON(keyValueMap, "{\"AlbumTitle\":\"Kalaakaar\",\"DateTime\":\""+new Date().toString()+"\"}");
+		updateWithJSON(keyValueMap, "{\"AlbumTitle\":\"Kalaakaar\",\"DateTime\":\"" + new Date().toString() + "\"}");
 		GetItem.getItem();
 	}
 
@@ -73,7 +75,15 @@ public class UpdateItem {
 
 	public static void updateWithJSON(Map<String, Object> keyValueMap, String json) throws Exception {
 		final AmazonDynamoDB ddb = Connection.getConnection();
-		Map<String, AttributeValueUpdate> attributeUpdates = new JacksonConverter().stringToMapU(json);
+		Item item = Item.fromJSON(json);
+		Map<String, AttributeValueUpdate> attributeUpdates = new HashMap<String, AttributeValueUpdate>();
+		Map<String, AttributeValue> item_values = ItemUtils.toAttributeValues(item);
+		Set<String> keys = item_values.keySet();
+		for (Iterator<String> iterator = keys.iterator(); iterator.hasNext();) {
+			String key = iterator.next();
+			attributeUpdates.put(key, new AttributeValueUpdate(item_values.get(key), AttributeAction.PUT));
+		}
+
 		UpdateItemRequest rq = new UpdateItemRequest();
 		rq.setTableName(Run.TABLE_NAME);
 		Set<String> keySet = keyValueMap.keySet();
